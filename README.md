@@ -36,7 +36,7 @@ Takeout/
 
 This is a helper script used to combine multiple per-year sub-folders, from multiple Google Photos Takeout archives into a single per-year folder.
 
-In case you have multiple Google Photos Takeout archives, the files might be split across different folders, like this:
+In case you have multiple Google Photos Takeout archives, the media and metadata files might be split across different folders, like this:
 
 ```
 Takeout_combine/
@@ -45,14 +45,14 @@ Takeout_combine/
       ...
       Photos from 2022/
         DSC01234.JPG
-        IMG_6342.JPG.json # Metadata
+        IMG_6342.JPG.json # Metadata for IMG_6342.JPG
         ...
 
   Takeout 2/
     Google Photos/
       ...
       Photos from 2022/
-        DSC01234.JPG.json # Metadata
+        DSC01234.JPG.json # Metadata for DSC01234.JPG
         IMG_6342.JPG
         ...
 ```
