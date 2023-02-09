@@ -10,7 +10,7 @@ import argparse
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
-    "--google-takeout-dirs", required=True, type=str, help="Google Photos takeouts dir"
+    "--google-takeouts-dir", required=True, type=str, help="Google Photos takeouts dir"
 )
 parser.add_argument("--rename", action="store_true", help="Actually perform rename")
 parser.add_argument(
@@ -18,7 +18,7 @@ parser.add_argument(
 )
 args = parser.parse_args()
 
-dirname = args.google_takeout_dirs
+dirname = args.google_takeouts_dir
 should_rename = args.rename
 should_progress_report = args.progress_report
 
