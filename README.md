@@ -1,4 +1,4 @@
-# gphotos-date-restore
+# gphotos-date-organize
 
 ## Problem
 
