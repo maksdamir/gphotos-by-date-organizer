@@ -7,7 +7,8 @@ When you download your media files from Google Photos Takeout, they come in per-
 ```
 Takeout/
   Google Photos/
-    ...
+    Photos from 2021/
+      ...
     Photos from 2022/
       DSC01234.JPG # When was this taken?
       IMG_6342.JPG # Or this? Which one comes first?
@@ -22,6 +23,8 @@ These scripts extract the creation date from either the metadata file or the med
 
 ```
 Takeout/
+  2021/
+    ...
   2022/
     2022_07_04__15_12_00__IMG_6342.JPG
     2022_12_01__13_15_02__DSC01234.JPG
