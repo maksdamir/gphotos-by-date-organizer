@@ -192,7 +192,7 @@ for media_file in media_file_full_paths:
 
 print (f"Processed {files_processed}/{files_total} media files")
 
-# Not rename media files
+# Now actually rename media files
 if should_rename:
     for media_file, creation_timestamp in media_file_full_paths.items():
         if creation_timestamp is None:
