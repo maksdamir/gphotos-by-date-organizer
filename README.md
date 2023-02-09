@@ -34,7 +34,7 @@ Takeout/
 
 ### combine-year-folders.py
 
-This script combines multiple per-year sub-folders, from multiple Google Photos Takeout archives into a single per-year folder.
+This is a helper script used to combine multiple per-year sub-folders, from multiple Google Photos Takeout archives into a single per-year folder.
 
 In case you have multiple Google Photos Takeout archives, the files might be split across different folders, like this:
 
