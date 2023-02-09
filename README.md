@@ -60,7 +60,7 @@ This makes it harder for the main script (`date-rename.py`) to find metadata fil
 So, to combine the folders together, run:
 
 ```
-./combine-year-folders.py /path/to/Takeouts
+$ ./combine-year-folders.py /path/to/Takeouts
 ```
 
 which ends up collecting the folders together:
@@ -81,7 +81,7 @@ To preview the changes without actually renaming any file, use the following com
 
 ```
 # dry run
-./date-rename.py /path/to/Takeout
+$ ./date-rename.py /path/to/Takeout
 google takeouts dir: /path/to/Takeout
 should rename: False
 progress report: False
@@ -105,7 +105,7 @@ Any files where the creation date cannot be determined (due to missing both meta
 If everything looks good and you're fine with skipped files, run the following command:
 
 ```
-./date-rename.py /path/to/Takeout --rename
+$ ./date-rename.py /path/to/Takeout --rename
 ```
 
 Resulting in:
