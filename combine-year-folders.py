@@ -2,7 +2,6 @@
 
 import sys
 import os
-import shutil
 
 if len(sys.argv) == 1:
     exit("usage: combine-year-foldres.py <google-photos-takeouts-dir>")
@@ -10,19 +9,14 @@ if len(sys.argv) == 1:
 dirname = sys.argv[1]
 output_dirname = f"{dirname}_out"
 
-print("dirname", dirname)
-print("output", output_dirname)
-
-try:
-    shutil.rmtree(output_dirname)
-except FileNotFoundError:
-    pass
+print("input directory", dirname)
+print("output directory", output_dirname)
 
 files_total = 0
 for root, dirs, files in os.walk(dirname):
-    files = [f for f in files if f not in {".DS_Store"}]
+    files = [f for f in files if f not in {".DS_Store", "archive_browser.html"}]
     files_total += len(files)
-print(f"{files_total} files to copy")
+print(f"{files_total} files to move")
 
 files_copied = 0
 for root, dirs, files in os.walk(dirname):
@@ -39,10 +33,10 @@ for root, dirs, files in os.walk(dirname):
         if file in {".DS_Store"}:
             continue
 
-        copied_path = f"{full_year_dirname}/{file}"
-        if os.path.exists(copied_path):
-            exit(f"File already exists! {copied_path}. Trying to copy from: {root}")
-        shutil.copy(f"{root}/{file}", copied_path)
+        new_path = f"{full_year_dirname}/{file}"
+        if os.path.exists(new_path):
+            exit(f"File already exists! {new_path}. Trying to move from: {root}")
+        os.rename(f"{root}/{file}", new_path)
 
         files_copied += 1
         if files_copied % 1000 == 0:
