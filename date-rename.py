@@ -1,29 +1,32 @@
 #!/usr/bin/env python3
 
-import sys
 import os
 import subprocess
 import datetime
 import json
-from typing import Optional
+from typing import Optional, Any
 import re
 import argparse
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--google-takeout-dirs', required=True, type=str, help="Google Photos takeouts dir")
-parser.add_argument('--rename', action="store_true", help="Actually perform rename")
+parser.add_argument(
+    "--google-takeout-dirs", required=True, type=str, help="Google Photos takeouts dir"
+)
+parser.add_argument("--rename", action="store_true", help="Actually perform rename")
 args = parser.parse_args()
 
 dirname = args.google_takeout_dirs
 should_rename = args.rename
 
-print (f"google takeouts dir: {dirname}; should rename: {should_rename}")
+print(f"google takeouts dir: {dirname}; should rename: {should_rename}")
 
-media_file_full_paths = {} # Media file path -> creation timestamp (utc)
-json_file_full_paths = set()
+media_file_full_paths: dict[
+    str, Any
+] = {}  # Media file path -> creation timestamp (utc)
+json_file_full_paths: set[str] = set()
 
 for root, dirs, files in os.walk(dirname):
-    for file in files:        
+    for file in files:
         if file == ".DS_Store":
             continue
 
@@ -34,23 +37,23 @@ for root, dirs, files in os.walk(dirname):
             media_file_full_paths[full_path] = None
 
 date_create_tags = [
-    'DateTimeOriginal',
+    "DateTimeOriginal",
     "SubSecDateTimeOriginal",
     "DateTimeCreated",
-    "CreationDate", 
-    'CreateDate', 
+    "CreationDate",
+    "CreateDate",
     "SubSecCreateDate",
-    'DateCreated',
+    "DateCreated",
     "MediaCreateDate",
 ]
 date_update_tags = [
     "SubSecModifyDate",
-    'ModifyDate',
+    "ModifyDate",
     "MediaModifyDate",
-    'MetadataDate',
+    "MetadataDate",
 ]
 date_gps_tags = [
-    'GPSDateTime',
+    "GPSDateTime",
 ]
 
 files_processed = 0
@@ -63,7 +66,7 @@ def get_json_file_path(media_file: str) -> Optional[str]:
     json_file = media_file + ".json"
     if json_file in json_file_full_paths:
         return json_file
-    
+
     # long names:
     # PXL_20340101_011252088._exported_755_1628556579337.jpg
     # PXL_20340101_011252088._exported_755_162855657.json
@@ -95,8 +98,8 @@ def get_json_file_path(media_file: str) -> Optional[str]:
     if file_ext == ".MP":
         json_file = f"{dir_name}/{base_file_name}.jpg.json"
         if json_file in json_file_full_paths:
-            return json_file    
-            
+            return json_file
+
     # iOS HEIC + MP4 pair
     # IMG_1637.MP4
     # IMG_1637.HEIC
@@ -117,16 +120,18 @@ def get_json_file_path(media_file: str) -> Optional[str]:
                 return json_file
 
     return None
-    
+
+
 def read_create_timestamp_from_json(json_file: str) -> float:
     try:
         with open(json_file, "r") as json_f:
             json_data = json.load(json_f)
-            photo_taken_timestamp = json_data['photoTakenTime']['timestamp']
+            photo_taken_timestamp = json_data["photoTakenTime"]["timestamp"]
             return float(photo_taken_timestamp)
     except Exception as e:
-        print (f"Failed to fetch photoTakenTime from json={json_file}")
+        print(f"Failed to fetch photoTakenTime from json={json_file}")
         raise e
+
 
 exif_create_date_tag_missing_files = set()
 json_missing_files = set()
@@ -134,7 +139,7 @@ json_missing_files = set()
 for media_file in media_file_full_paths:
     try:
         if files_processed % 1000 == 0:
-            print (f"Processed {files_processed}/{files_total} media files")
+            print(f"Processed {files_processed}/{files_total} media files")
 
         files_processed += 1
 
@@ -145,17 +150,19 @@ for media_file in media_file_full_paths:
             media_file_full_paths[media_file] = creation_timestamp
             continue
 
-        print (f"json file not found for media file={media_file}, trying exiftool")
+        print(f"json file not found for media file={media_file}, trying exiftool")
         json_missing_files.add(media_file)
-        
+
         # Fallback to exiftool
-        exiftool_result = subprocess.run(["exiftool", "-json", media_file], capture_output=True, text=True)
+        exiftool_result = subprocess.run(
+            ["exiftool", "-json", media_file], capture_output=True, text=True
+        )
         if exiftool_result.returncode == 0:
             exiftool_json = json.loads(exiftool_result.stdout)[0]
 
-            creation_date = None
-            gps_date = None
-            update_date = None
+            creation_date: Optional[str] = None
+            gps_date: Optional[str] = None
+            update_date: Optional[str] = None
             for date_tag in date_create_tags:
                 if date_tag in exiftool_json:
                     creation_date = exiftool_json[date_tag]
@@ -172,25 +179,36 @@ for media_file in media_file_full_paths:
                     update_tag_used = date_tag
                     break
             if creation_date is None:
-                exif_create_date_tag_missing_files.add(media_file)
-                print (f"No create date tag found for media file={media_file}, update_date={update_date}, gps_date={gps_date}")
-                if update_date is None and gps_date is None:
-                    continue
+                print(
+                    f"No create date tag found for media file={media_file}, update_date={update_date}, gps_date={gps_date}"
+                )
 
             date_to_use = creation_date
             if date_to_use is None:
                 date_to_use = gps_date
             if date_to_use is None:
                 date_to_use = update_date
-            
-            creation_timestamp = datetime.datetime.strptime(date_to_use[:19], "%Y:%m:%d %H:%M:%S").timestamp()
+            if date_to_use is None:
+                exif_create_date_tag_missing_files.add(media_file)
+                continue
+
+            creation_timestamp = datetime.datetime.strptime(
+                date_to_use[:19], "%Y:%m:%d %H:%M:%S"
+            ).timestamp()
         else:
-            print (f"exiftool run failed for media file={media_file}, err={exiftool_result}")
+            print(
+                f"exiftool run failed for media file={media_file}, err={exiftool_result}"
+            )
     except Exception as e:
-        print (media_file)
+        print(media_file)
         raise e
 
-print (f"Processed {files_processed}/{files_total} media files")
+print(f"Processed {files_processed}/{files_total} media files")
+
+for media_file in exif_create_date_tag_missing_files:
+    print(
+        f"No creation date found and rename will be skipped for media file={media_file}"
+    )
 
 # Now actually rename media files
 if should_rename:
@@ -201,10 +219,9 @@ if should_rename:
         base_file_name = os.path.basename(media_file)
         dir_name = os.path.dirname(media_file)
 
-        date_str = datetime.datetime.utcfromtimestamp(creation_timestamp).strftime("%Y_%m_%d__%H_%M_%S__")
+        date_str = datetime.datetime.utcfromtimestamp(creation_timestamp).strftime(
+            "%Y_%m_%d__%H_%M_%S__"
+        )
         new_media_file = f"{dir_name}/{date_str}{base_file_name}"
 
         os.rename(media_file, new_media_file)
-
-
-
