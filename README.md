@@ -77,11 +77,26 @@ Takeouts_out/
 ### date-rename.py
 Once you have your media files and corresponding metadata json files in place (either through the aforementioned script or any other method), it's time to proceed with renaming the files.
 
-To preview the changes without actually changing anything, use the following command:
+To preview the changes without actually renaming any file, use the following command:
 
 ```
 # dry run
 ./date-rename.py /path/to/Takeout
+google takeouts dir: /path/to/Takeout
+should rename: False
+progress report: False
+
+  json file not found for media file=/path/to/Takeout/2019/unknown.jpg, trying exiftool
+  No create date tag found for media file=/path/to/Takeout/2019/unknown.jpg
+
+Processed 17514/17514 media files
+
+=== Following media files lack both a corresponding JSON metadata file
+=== and date information in the EXIF data.
+=== As a result, they will not be renamed and require manual processing.
+    /path/to/Takeout/2019/unknown.jpg
+
+Renaming files skipped (dry run)
 ```
 
 This will process each media file in the directory and retrieve the creation date from the corresponding metadata file or, if missing, the EXIF data.
