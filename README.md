@@ -39,7 +39,7 @@ This is a helper script used to combine multiple per-year sub-folders, from mult
 In case you have multiple Google Photos Takeout archives, the media and metadata files might be split across different folders, like this:
 
 ```
-Takeout_combine/
+Takeouts/
   Takeout/
     Google Photos/
       ...
@@ -62,13 +62,13 @@ This makes it harder for the main script (`date-rename.py`) to find metadata fil
 So, to combine the folders together, run:
 
 ```
-./combine-year-folders.py /path/to/Takeout_combine
+./combine-year-folders.py /path/to/Takeouts
 ```
 
 which ends up collecting the folders together:
 
 ```
-Takeout_combine_out/
+Takeouts_out/
   2022/
     DSC01234.JPG
     DSC01234.JPG.json 
