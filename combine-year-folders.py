@@ -5,13 +5,13 @@ import os
 import shutil
 
 if len(sys.argv) == 1:
-    exit("Input dirname is required for processing.")
+    exit("usage: combine-year-foldres.py <google-photos-takeouts-dir>")
 
 dirname = sys.argv[1]
 output_dirname = f"{dirname}_out"
 
-print(f"dirname: {dirname}")
-print(f"output: {output_dirname}")
+print("dirname", dirname)
+print("output", output_dirname)
 
 try:
     shutil.rmtree(output_dirname)
@@ -25,7 +25,6 @@ for root, dirs, files in os.walk(dirname):
 print(f"{files_total} files to copy")
 
 files_copied = 0
-files_hits_input = {}
 for root, dirs, files in os.walk(dirname):
     # Convert ".../Google Photos/Photos from 2022" -> "2022"
     year_dirname_components = root.split("Photos from ")
@@ -45,29 +44,8 @@ for root, dirs, files in os.walk(dirname):
             exit(f"File already exists! {copied_path}. Trying to copy from: {root}")
         shutil.copy(f"{root}/{file}", copied_path)
 
-        if file not in files_hits_input:
-            files_hits_input[file] = 0
-        files_hits_input[file] += 1
         files_copied += 1
         if files_copied % 1000 == 0:
             print(f"Processed {files_copied}/{files_total} files")
 
 print(f"Processed {files_copied}/{files_total} files")
-print("Copied files validation...")
-
-files_hits_output = {}
-for root, dirs, files in os.walk(output_dirname):
-    for file in files:
-        if file in {".DS_Store"}:
-            continue
-
-        if file not in files_hits_output:
-            files_hits_output[file] = 0
-        files_hits_output[file] += 1
-
-if len(files_hits_input) != len(files_hits_output):
-    exit(f"Size mismatch for files: {len(files_hits_input)}, {len(files_hits_output)}")
-
-for file, hits in files_hits_input.items():
-    if hits != files_hits_output[file]:
-        exit(f"Hits mismatch for file {file}")
