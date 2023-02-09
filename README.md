@@ -84,7 +84,7 @@ To preview the changes without actually changing anything, use the following com
 
 ```
 # dry run
-./date-rename.py --google-takeouts-dir /path/to/Takeout
+./date-rename.py /path/to/Takeout
 ```
 
 This will process each media file in the directory and retrieve the creation date from the corresponding metadata file or, if missing, the EXIF data.
@@ -93,5 +93,5 @@ Any files where the creation date cannot be determined (due to missing both meta
 If everything looks good and you're fine with skipped files, run the following command:
 
 ```
-./date-rename.py --google-takeouts-dir /path/to/Takeout --rename
+./date-rename.py /path/to/Takeout --rename
 ```

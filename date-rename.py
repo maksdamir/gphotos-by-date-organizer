@@ -9,9 +9,7 @@ import re
 import argparse
 
 parser = argparse.ArgumentParser()
-parser.add_argument(
-    "--google-takeouts-dir", required=True, type=str, help="Google Photos takeouts dir"
-)
+parser.add_argument("google_takeouts_dir", type=str, help="Google Photos takeouts dir")
 parser.add_argument("--rename", action="store_true", help="Actually perform rename")
 parser.add_argument(
     "--progress-report", action="store_true", help="Report each 1000 processed files"
