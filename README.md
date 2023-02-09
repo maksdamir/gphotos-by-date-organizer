@@ -22,12 +22,10 @@ These scripts extract the creation date from either the metadata file or the med
 
 ```
 Takeout/
-  Google Photos/
+  2022/
+    2022_07_04__15_12_00__IMG_6342.JPG
+    2022_12_01__13_15_02__DSC01234.JPG
     ...
-    Photos from 2022/
-      2022_07_04__15_12_00__IMG_6342.JPG
-      2022_12_01__13_15_02__DSC01234.JPG
-      ...
 ```
 
 ## Scripts
@@ -74,7 +72,6 @@ Takeouts_out/
     DSC01234.JPG.json 
     IMG_6342.JPG
     IMG_6342.JPG.json
-    ...
 ```
 
 ### date-rename.py
@@ -94,4 +91,16 @@ If everything looks good and you're fine with skipped files, run the following c
 
 ```
 ./date-rename.py /path/to/Takeout --rename
+```
+
+Resulting in:
+
+```
+Takeout/
+  2022/
+    2022_07_04__15_12_00__IMG_6342.JPG
+    2022_12_01__13_15_02__DSC01234.JPG
+    meta/
+      2022_07_04__15_12_00__IMG_6342.JPG.json
+      2022_12_01__13_15_02__DSC01234.JPG.json
 ```

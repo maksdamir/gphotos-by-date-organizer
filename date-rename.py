@@ -238,13 +238,22 @@ if should_rename:
             continue
 
         base_file_name = os.path.basename(media_file)
+        file_name, file_ext = os.path.splitext(base_file_name)
         dir_name = os.path.dirname(media_file)
 
         date_str = datetime.datetime.utcfromtimestamp(creation_timestamp).strftime(
             "%Y_%m_%d__%H_%M_%S__"
         )
-        new_media_file = f"{dir_name}/{date_str}{base_file_name}"
+        if file_ext == ".json":
+            new_media_file = f"{dir_name}/meta/{date_str}{base_file_name}"
+            try:
+                os.rename(media_file, new_media_file)
+            except FileNotFoundError:
+                os.makedirs(os.path.dirname(new_media_file))
+                os.rename(media_file, new_media_file)
+        else:
+            new_media_file = f"{dir_name}/{date_str}{base_file_name}"
+            os.rename(media_file, new_media_file)
 
-        os.rename(media_file, new_media_file)
 else:
     print("Renaming files skipped (dry run)")
