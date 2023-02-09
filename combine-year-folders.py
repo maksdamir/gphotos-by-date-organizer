@@ -20,7 +20,7 @@ print(f"{files_total} files to move")
 
 files_copied = 0
 for root, dirs, files in os.walk(dirname):
-    # Convert ".../Google Photos/Photos from 2022" -> "2022"
+    # Convert "input_dir/.../Google Photos/Photos from 2022" -> "input_dir_out/2022"
     year_dirname_components = root.split("Photos from ")
     if len(year_dirname_components) == 1:
         continue
